@@ -1,0 +1,88 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node definition
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+// Insert at the head
+Node* insert_head(Node* head, int value) {
+    Node* newNode = malloc(sizeof(Node));
+    newNode->data = value;
+    newNode->next = head;
+    return newNode;
+}
+
+// Insert sorted (ascending order)
+Node* insert_sorted(Node* head, int value) {
+    Node* newNode = malloc(sizeof(Node));
+    newNode->data = value;
+    newNode->next = NULL;
+
+    if (head == NULL || value < head->data) {
+        newNode->next = head;
+        return newNode;
+    }
+
+    Node* current = head;
+    while (current->next != NULL && current->next->data < value) {
+        current = current->next;
+    }
+    newNode->next = current->next;
+    current->next = newNode;
+    return head;
+}
+
+// Search for a value
+Node* search(Node* head, int value) {
+    Node* current = head;
+    while (current != NULL) {
+        if (current->data == value) return current;
+        current = current->next;
+    }
+    return NULL;
+}
+
+// Print the list
+void print_list(Node* head) {
+    Node* current = head;
+    while (current != NULL) {
+        printf("%d -> ", current->data);
+        current = current->next;
+    }
+    printf("NULL\n");
+}
+
+// Free memory
+void free_list(Node* head) {
+    Node* current = head;
+    while (current != NULL) {
+        Node* next = current->next;
+        free(current);
+        current = next;
+    }
+}
+
+int main() {
+    Node* head = NULL;
+
+    // Insert some values
+    head = insert_sorted(head, 5);
+    head = insert_sorted(head, 1);
+    head = insert_sorted(head, 8);
+    head = insert_sorted(head, 3);
+
+    printf("Linked list: ");
+    print_list(head);
+
+    // Search
+    int target = 3;
+    Node* found = search(head, target);
+    if (found) printf("Found %d in the list.\n", target);
+    else printf("%d not found.\n", target);
+
+    free_list(head);
+    return 0;
+}
